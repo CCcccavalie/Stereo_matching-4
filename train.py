@@ -3,21 +3,23 @@ import os
 import models.net_factory as nf
 import numpy as np
 from data_handler import Data_handler
+import sys
 
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 flags = tf.app.flags
 
 flags.DEFINE_integer('batch_size', 128, 'Batch size.')
 flags.DEFINE_integer('num_iter', 40000, 'Total training iterations')
 flags.DEFINE_string('model_dir', 'model', 'Trained network dir')
-flags.DEFINE_string('data_version', 'kitti2012', 'kitti2012 or kitti2015')
-flags.DEFINE_string('data_root', '', 'training dataset dir')
+flags.DEFINE_string('data_version', 'kitti2015', 'kitti2012 or kitti2015')
+flags.DEFINE_string('data_root', '../datasets/', 'training dataset dir')
 flags.DEFINE_string('util_root', '', 'Binary training files dir')
-flags.DEFINE_string('net_type', 'win37_dep9', 'Network type: win37_dep9 pr win19_dep9')
+flags.DEFINE_string('net_type', 'win37_dep9', 'Network type: win37_dep9 or win19_dep9')
 
 flags.DEFINE_integer('eval_size', 200, 'number of evaluation patchs per iteration')
 flags.DEFINE_integer('num_tr_img', 160, 'number of training images')
-flags.DEFINE_integer('num_val_img', 34, 'number of evaluation images')
+flags.DEFINE_integer('num_val_img', 40, 'number of evaluation images')
 flags.DEFINE_integer('patch_size', 37, 'training patch size')
 flags.DEFINE_integer('num_val_loc', 50000, 'number of validation locations')
 flags.DEFINE_integer('disp_range', 201, 'disparity range')
@@ -37,7 +39,7 @@ dhandler = Data_handler(data_version=FLAGS.data_version,
 	batch_size=FLAGS.batch_size, 
 	patch_size=FLAGS.patch_size, 
 	disp_range=FLAGS.disp_range)
-
+print('data handler prepared')
 
 if FLAGS.data_version == 'kitti2012':
 	num_channels = 1
@@ -133,7 +135,3 @@ elif FLAGS.phase == 'evaluate':
 	evaluate()
 else:
 	sys.exit('FLAGS.phase = train or evaluate')
-
-
-
-
